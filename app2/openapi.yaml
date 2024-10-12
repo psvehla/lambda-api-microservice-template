@@ -1,0 +1,283 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: contact@example.com
+    url: http://example.com/contact
+  description: "This is an **example** API to demonstrate features of OpenAPI specification\n\
+    # Introduction\nThis API definition is intended to to be a good starting point\
+    \ for describing your API in \n[OpenAPI format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.1.0.md).\n\
+    \n# OpenAPI Specification\nThe goal of The OpenAPI Specification is to define\
+    \ a standard, language-agnostic interface to REST APIs which\nallows both humans\
+    \ and computers to discover and understand the capabilities of the service without\
+    \ access to source\ncode, documentation, or through network traffic inspection.\
+    \ When properly defined via OpenAPI, a consumer can \nunderstand and interact\
+    \ with the remote service with a minimal amount of implementation logic. Similar\
+    \ to what\ninterfaces have done for lower-level programming, OpenAPI removes the\
+    \ guesswork in calling the service.\n"
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://example.com/terms/
+  title: Example
+  version: "0.0"
+  x-logo:
+    url: https://psvehla.github.io/openapi-template/logo.png
+servers:
+- url: http://example.com/api/v1
+- url: https://example.com/api/v1
+tags:
+- description: Get the OpenAPI spec in YAML format
+  name: Spec
+- description: Example echo operations
+  name: Echo
+- description: Operations about user
+  name: User
+- description: Health check of the service
+  name: Health
+paths:
+  /openapi.yaml:
+    get:
+      operationId: getOpenAPISpecYaml
+      responses:
+        "200":
+          content:
+            application/yaml:
+              schema:
+                type: string
+          description: The OpenAPI YAML specification
+      summary: Get the OpenAPI spec in YAML format
+      tags:
+      - Spec
+  /users/{username}:
+    get:
+      description: "Some description of the operation. \nYou can use `markdown` here.\n"
+      operationId: getUserByName
+      parameters:
+      - description: The name that needs to be fetched
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Filter users without email
+        explode: true
+        in: query
+        name: with_email
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: Pretty print response
+        explode: true
+        in: query
+        name: pretty_print
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                username: user1
+                email: user@example.com
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Success
+        "403":
+          description: Forbidden
+        "404":
+          description: User not found
+      security:
+      - main_auth:
+        - read:users
+      - api_key: []
+      summary: Get user by user name
+      tags:
+      - User
+    parameters:
+    - description: Pretty print response
+      explode: true
+      in: query
+      name: pretty_print
+      required: false
+      schema:
+        type: boolean
+      style: form
+    put:
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+      - description: The name that needs to be updated
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Pretty print response
+        explode: true
+        in: query
+        name: pretty_print
+        required: false
+        schema:
+          type: boolean
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid user supplied
+        "404":
+          description: User not found
+      security:
+      - main_auth:
+        - write:users
+      summary: Updated user
+      tags:
+      - User
+  /echo:
+    post:
+      description: Receive the exact message you've sent
+      operationId: echo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          application/xml:
+            schema:
+              type: string
+        description: Echo payload
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                response:
+                  value: Hello world!
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+          description: OK
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              explode: false
+              schema:
+                format: int32
+                type: integer
+              style: simple
+            X-Expires-After:
+              $ref: '#/components/headers/ExpiresAfter'
+      security:
+      - api_key: []
+      - basic_auth: []
+      summary: Echo test
+      tags:
+      - Echo
+  /health:
+    get:
+      operationId: healthCheck
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/healthCheck_200_response'
+          description: Service is healthy
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/healthCheck_200_response'
+          description: Service is unavailable
+      summary: Health check of the service
+      tags:
+      - Health
+components:
+  headers:
+    ExpiresAfter:
+      description: date in UTC when token expires
+      explode: false
+      schema:
+        format: date-time
+      style: simple
+  schemas:
+    Email:
+      description: User email address
+      format: test
+      title: email
+      type: string
+    User:
+      example:
+        firstName: firstName
+        lastName: lastName
+        email: email
+        username: username
+      properties:
+        username:
+          description: User supplied username
+          minLength: 4
+          title: username
+          type: string
+        firstName:
+          description: User first name
+          minLength: 1
+          title: firstName
+          type: string
+        lastName:
+          description: User last name
+          minLength: 1
+          title: lastName
+          type: string
+        email:
+          description: User email address
+          format: test
+          title: email
+          type: string
+      title: User
+    healthCheck_200_response:
+      example:
+        status: status
+      properties:
+        status:
+          title: status
+          type: string
+      title: healthCheck_200_response
+  securitySchemes:
+    main_auth:
+      flows:
+        implicit:
+          authorizationUrl: http://example.com/api/oauth/dialog
+          scopes:
+            read:users: read users info
+            write:users: modify or remove users
+      type: oauth2
+    api_key:
+      in: header
+      name: api_key
+      type: apiKey
+    basic_auth:
+      scheme: basic
+      type: http
