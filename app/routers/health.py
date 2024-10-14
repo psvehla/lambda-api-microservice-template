@@ -15,7 +15,7 @@ router = APIRouter(tags=['Health'])
 @router.get(
     '/health',
     response_model=HealthGetResponse,
-    responses={'200': {'model': HealthGetResponse}, '503': {'model': HealthGetResponse1}},
+    responses={'503': {'model': HealthGetResponse1}},
     tags=['Health'],
 )
 def health_check(response: Response) -> Union[HealthGetResponse, HealthGetResponse1]:
