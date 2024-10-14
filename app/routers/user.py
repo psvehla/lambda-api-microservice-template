@@ -8,10 +8,10 @@ from fastapi import APIRouter
 
 from ..dependencies import User, Optional
 
-router = APIRouter(tags=['User'])
+router = APIRouter(tags=["User"])
 
 
-@router.get('/users/{username}', response_model=User, tags=['User'])
+@router.get("/users/{username}", response_model=User, tags=["User"])
 def get_user_by_name(
     username: str,
     with_email: Optional[bool] = None,
@@ -23,7 +23,7 @@ def get_user_by_name(
     pass
 
 
-@router.put('/users/{username}', response_model=None, tags=['User'])
+@router.put("/users/{username}", response_model=None, tags=["User"])
 def update_user(
     username: str, pretty_print: Optional[bool] = None, body: User = ...
 ) -> None:

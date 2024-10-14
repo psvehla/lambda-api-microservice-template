@@ -8,10 +8,10 @@ from fastapi import APIRouter
 
 from ..dependencies import *
 
-router = APIRouter(tags=['Echo'])
+router = APIRouter(tags=["Echo"])
 
 
-@router.post('/echo', response_model=str, tags=['Echo'])
+@router.post("/echo", response_model=str, tags=["Echo"])
 def echo(body: str) -> str:
     """
     Echo test

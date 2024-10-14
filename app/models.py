@@ -11,26 +11,26 @@ from pydantic import BaseModel, Field, RootModel, constr
 
 class Email(RootModel[str]):
     root: str = Field(
-        ..., description='User email address', examples=['john.smith@example.com']
+        ..., description="User email address", examples=["john.smith@example.com"]
     )
 
 
 class User(BaseModel):
     username: Optional[constr(min_length=4)] = Field(
-        None, description='User supplied username', examples=['John78']
+        None, description="User supplied username", examples=["John78"]
     )
     firstName: Optional[constr(min_length=1)] = Field(
-        None, description='User first name', examples=['John']
+        None, description="User first name", examples=["John"]
     )
     lastName: Optional[constr(min_length=1)] = Field(
-        None, description='User last name', examples=['Smith']
+        None, description="User last name", examples=["Smith"]
     )
     email: Optional[Email] = None
 
 
 class HealthGetResponse(BaseModel):
-    status: Optional[str] = Field(None, examples=['healthy'])
+    status: Optional[str] = Field(None, examples=["healthy"])
 
 
 class HealthGetResponse1(BaseModel):
-    status: Optional[str] = Field(None, examples=['unhealthy'])
+    status: Optional[str] = Field(None, examples=["unhealthy"])

@@ -8,10 +8,10 @@ from fastapi import APIRouter
 
 from ..dependencies import *
 
-router = APIRouter(tags=['Spec'])
+router = APIRouter(tags=["Spec"])
 
 
-@router.get('/openapi.yaml', response_model=str, tags=['Spec'])
+@router.get("/openapi.yaml", response_model=str, tags=["Spec"])
 def get_open_a_p_i_spec_yaml() -> str:
     """
     Get the OpenAPI spec in YAML format
