@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, status, Response
 
-from ..dependencies import *
+from ..dependencies import Union, HealthGetResponse, HealthGetResponse1
 from app.service import service
 
 router = APIRouter(tags=['Health'])
