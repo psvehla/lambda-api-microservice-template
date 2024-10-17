@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 
 from ..dependencies import *
 
@@ -12,8 +12,8 @@ router = APIRouter(tags=["Echo"])
 
 
 @router.post("/echo", response_model=str, tags=["Echo"])
-def echo(body: str) -> str:
+def echo(body: str = Body(..., embed=True)) -> str:
     """
     Echo test
     """
-    pass
+    return body
