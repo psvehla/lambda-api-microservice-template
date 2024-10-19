@@ -6,8 +6,6 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Body
 
-from ..dependencies import *
-
 router = APIRouter(tags=["Echo"])
 
 
