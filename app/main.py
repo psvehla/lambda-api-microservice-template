@@ -66,6 +66,7 @@ def get_openapi_spec_yaml() -> Response:
     with open("openapi.yaml", "r") as file:
         openapi_yaml = yaml.safe_load_all(file)
         yaml.safe_dump_all(openapi_yaml, openapi_yaml_str, sort_keys=False)
+        file.close()
 
     # the code-first version
     # yaml.dump(app.openapi(), openapi_yaml_str, sort_keys=False)
