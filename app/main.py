@@ -3,10 +3,14 @@
 #   timestamp: 2024-10-07T11:50:15+00:00
 
 from __future__ import annotations
+import functools
+import io
 
 from fastapi import FastAPI
+from fastapi.responses import Response
+import yaml
 
-from .routers import echo, health, spec, user
+from .routers import echo, health, user
 
 app = FastAPI(
     version="0.0",
@@ -29,10 +33,41 @@ app = FastAPI(
 
 app.include_router(echo.router)
 app.include_router(health.router)
-app.include_router(spec.router)
 app.include_router(user.router)
 
 
 @app.get("/")
 async def root():
+    """
+    Asynchronous function that serves as the root endpoint of the application.
+
+    Returns:
+        dict: A dictionary containing a welcome message for the application's gateway.
+    """
     return {"message": "Gateway of the App"}
+
+
+@app.get("/openapi.yaml", include_in_schema=False, response_model=None)
+@functools.lru_cache()
+def get_openapi_spec_yaml() -> Response:
+    """
+    Get the OpenAPI spec in YAML format.
+
+    This function reads the OpenAPI specification from a file named "openapi.yaml",
+    converts it into a YAML formatted string, and returns it as a Response object
+    with the media type set to "text/yaml".
+
+    Returns:
+        Response: A Response object containing the OpenAPI spec in YAML format.
+    """
+    openapi_yaml_str = io.StringIO()
+
+    # the api-first version
+    with open("openapi.yaml", "r") as file:
+        openapi_yaml = yaml.safe_load_all(file)
+        yaml.safe_dump_all(openapi_yaml, openapi_yaml_str, sort_keys=False)
+
+    # the code-first version
+    # yaml.dump(app.openapi(), openapi_yaml_str, sort_keys=False)
+
+    return Response(content=openapi_yaml_str.getvalue(), media_type="text/yaml")

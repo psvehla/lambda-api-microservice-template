@@ -39,8 +39,8 @@ info:
 # A list of tags used by the definition with additional metadata.
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
-  - name: Spec
-    description: Get the OpenAPI spec in YAML format
+  - name: Root
+    description: Gateway welcome
   - name: Echo
     description: Example echo operations
   - name: User
@@ -54,22 +54,21 @@ servers:
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL. 
 paths:
-  /openapi.yaml:
+  /:
     get:
       tags:
-        - Spec
-
-      summary: Get the OpenAPI spec in YAML format
-
-      operationId: getOpenAPISpecYaml
-
+        - Root
+      summary: Root
+      description: "Asynchronous function that serves as the root endpoint of the\
+        \ application.\n\nReturns:\n    dict: A dictionary containing a welcome message\
+        \ for the application's gateway."
+      operationId: root__get
       responses:
         '200':
-          description: The OpenAPI YAML specification
+          description: Successful Response
           content:
-            application/yaml:
-              schema:
-                type: string
+            application/json:
+              schema: {}
   '/users/{username}': # path parameter in curly braces
 
     # parameters list that are used with each operation for this path
@@ -127,6 +126,12 @@ paths:
           description: Forbidden
         '404':
           description: User not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'  
     # documentation for PUT operation for this path
     put:
       tags:
@@ -151,6 +156,12 @@ paths:
           description: Invalid user supplied
         '404':
           description: User not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       # request body documentation
       requestBody:
         content:
@@ -197,6 +208,12 @@ paths:
             text/csv:
               schema:
                 type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       requestBody:
         content:
           application/json:
@@ -215,6 +232,9 @@ paths:
       - Health
 
       summary: Health check of the service
+      description: |
+        Allows the caller to check the health of the service. What this actually means will vary from service to service. Some may verify that downstream services 
+        are available. Some may merely report that they can respond to requests.
 
       operationId: healthCheck
       
@@ -239,7 +259,7 @@ paths:
                   status:
                     type: string
                     examples: [ "unhealthy" ]
-        
+
 # An object to hold reusable parts that can be used across the definition
 components:
   schemas:
@@ -268,6 +288,36 @@ components:
           examples: [ Smith ]
         email:
           $ref: '#/components/schemas/Email'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   headers:
     ExpiresAfter:
       description: date in UTC when token expires
