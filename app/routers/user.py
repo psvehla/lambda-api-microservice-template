@@ -7,6 +7,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from ..dependencies import User, Optional
+from app.service import service
 
 router = APIRouter(tags=["User"])
 
@@ -20,7 +21,7 @@ def get_user_by_name(
     """
     Get user by user name
     """
-    pass
+    return service.get_user_by_name(username)
 
 
 @router.put("/users/{username}", response_model=None, tags=["User"])
@@ -30,4 +31,5 @@ def update_user(
     """
     Updated user
     """
-    pass
+    service.add_user(username, pretty_print, body)
+    return
