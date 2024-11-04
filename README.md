@@ -17,3 +17,17 @@ Test run.
 ```bash
 fastapi dev app/main.py
 ```
+
+Lambda build.
+
+```bash
+mkdir lambda-build
+
+docker run --platform linux/amd64 -u $(id -u):$(id -g) -v ./lambda-build:/lambda-build -v ./requirements.txt:/requirements.txt -v ~/.cache/pip:/.cache/pip python:3.12 pip install -r /requirements.txt -t /lambda-build
+
+cp -r app lambda-build
+
+cd lambda-build
+
+zip -r function.zip *
+```
